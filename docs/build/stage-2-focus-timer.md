@@ -747,11 +747,63 @@ Tests cover left, right, top, bottom, an oversized saved coordinate, and both sn
 - set macOS activation policy to `NSApplicationActivationPolicyAccessory`;
 - distinguish click from drag with a 5-point Manhattan threshold;
 - snap to the nearer horizontal screen edge;
-- save `x`, `y`, and screen name in `~/.fairy/desktop.json`;
-- clamp a restored position to an available screen;
+- start in the bottom-right corner on first launch;
 - emit a `clicked` signal rather than deciding what the popup does;
 - show the hover peek only after 650 ms;
 - hide the peek when dragging or leaving.
+
+For this session, do not add the saved-position restore path yet. Keep the first pass deliberately simple: the fairy starts in the bottom-right corner and is dragged only by the user.
+
+A good first-pass scaffold is:
+
+```python
+from pathlib import Path
+
+from PySide6.QtCore import QPoint, Qt
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QApplication, QLabel, QWidget
+
+from fairy.desktop.geometry import clamp_position, snap_x
+
+
+class FloatingFairy(QWidget):
+    def __init__(self):
+        super().__init__()
+        # set window flags, translucency, and accessory behavior
+        # load fairy image from uiux/assets/fairy-full.png
+        # size the image to roughly 120 logical px high
+        # set an initial position in the bottom-right corner
+        # keep drag state and pointer tracking for click-vs-drag detection
+        pass
+
+    def mousePressEvent(self, event):
+        # store start position and mouse press point
+        pass
+
+    def mouseMoveEvent(self, event):
+        # if the drag threshold is crossed, move the window
+        pass
+
+    def mouseReleaseEvent(self, event):
+        # if it was a drag, snap to the nearer edge
+        # if it was a click, emit a clicked signal
+        pass
+
+    def move_to_screen_edge(self):
+        # compute the current screen bounds and desired x/y
+        # call snap_x(x, width, left, right)
+        # clamp to the active screen rectangle
+        pass
+
+
+def main():
+    app = QApplication([])
+    fairy = FloatingFairy()
+    fairy.show()
+    app.exec()
+```
+
+This scaffold is intentionally minimalist. It keeps the app behavior obvious, makes the drag rules visible, and avoids premature persistence or restore code. The first version should be easy to reason about and test before layering on saved state or richer UI.
 
 The hover peek contains only:
 

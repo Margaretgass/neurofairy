@@ -9,12 +9,15 @@ dependencies = [
     "fastmcp>=4.0.5",
     "langchain>=1.4.2",
     "langchain-ollama>=1.1.0",
+    "pyobjc-framework-cocoa>=12.2.2 ; sys_platform == 'darwin'",
+    "pyside6>=6.11.2",
     "python-multipart>=0.0.32",
     "uvicorn[standard]>=0.53.0",
 ]
 
 [project.scripts]
 fairy-tasks = "fairy.servers.tasks_server:main"
+fairy-desktop = "fairy.desktop.app:main"
 
 [dependency-groups]
 dev = [
